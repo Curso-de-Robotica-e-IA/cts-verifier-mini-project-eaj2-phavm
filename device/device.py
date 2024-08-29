@@ -97,7 +97,38 @@ class Device(AbstractDevice):
         """
         subprocess.run(f'adb -s {self.__ip_port} shell rm /sdcard/DCIM/Camera/*')
 
+    def lock_or_unlock_screen(self) -> None:
+        """
+        Lock or unlock the screen.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell "input keyevent 26"')
+    
+    def swipe_upwards(self) -> None:
+        """
+        Swipe upwards on the screen (unlock screen if locked).
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell "input touchscreen swipe 930 880 930 380"')
 
+    def open_cts(self) -> None:
+        """
+        Open CTS Verifier app.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell am start -n com.android.cts.verifier/com.android.cts.verifier.camera.orientation.CameraOrientationActivity')
+
+    def print_screen(self) -> None:
+        """
+        Take a picture of the current screen.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell screencap -p /sdcard/cameraorientationscreen.png')
+    
+    def save_print(self) -> None:
+        """
+        Get printscreen from device and save it in the computer.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} pull /sdcard/cameraorientationscreen.png')
+
+"""
+# Tests
 if __name__ == '__main__':
     device = Device('192.168.158.230:38827', 'moto_g32')
     device.connect()
@@ -107,3 +138,4 @@ if __name__ == '__main__':
     device.clear_gallery()
     device.return_home()
     device.disconnect()
+"""
