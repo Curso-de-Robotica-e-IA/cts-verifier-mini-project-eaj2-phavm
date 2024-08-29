@@ -1,7 +1,7 @@
 import subprocess
 import os
 from time import sleep
-from device.abstract_device import AbstractDevice
+from abstract_device import AbstractDevice
 
 # Dict with coordinates of camera button to take picture
 models_specification = {'samsung_a34': {'x': 365, 'y': 1358, 'width': 78.1},
@@ -17,6 +17,13 @@ class Device(AbstractDevice):
         self.__camera__pos_dict = models_specification[self.model] if self.__is_model_camera_button_pos_mapped() else {}
         self.__connected = False
         self.width = models_specification[self.model]['width'] if self.__is_model_camera_button_pos_mapped() else 0
+
+    @staticmethod
+    def __start_adb() -> None:
+        """
+        Start the ADB server.
+        """
+        subprocess.run('adb start-server')
 
     def __is_model_camera_button_pos_mapped(self) -> bool:
         """
@@ -97,13 +104,28 @@ class Device(AbstractDevice):
         """
         subprocess.run(f'adb -s {self.__ip_port} shell rm /sdcard/DCIM/Camera/*')
 
-    def lock_or_unlock_screen(self) -> None:
+    def __verify_screen_status(self) -> str:
+        """
+        Check whether the screen is locked or unlocked
+        """
+        screen_status = subprocess.run(f'adb -s {self.__ip_port} shell "dumpsys power | grep \'mWakefulness=\'"', capture_output=True, text=True)
+        result = screen_status.stdout.split('=')[-1].strip()
+        #result = result.[-1]
+        return result
+
+    def lock_or_unlock_screen(self) -> bool:
         """
         Lock or unlock the screen.
         """
-        subprocess.run(f'adb -s {self.__ip_port} shell "input keyevent 26"')
+        status = self.__verify_screen_status()
+        if status == 'Dozing':
+            subprocess.run(f'adb -s {self.__ip_port} shell "input keyevent 26"')
+            sleep(1)
+            self.__swipe_upwards()
+            return True
+        return False
     
-    def swipe_upwards(self) -> None:
+    def __swipe_upwards(self) -> None:
         """
         Swipe upwards on the screen (unlock screen if locked).
         """
@@ -130,12 +152,8 @@ class Device(AbstractDevice):
 """
 # Tests
 if __name__ == '__main__':
-    device = Device('192.168.158.230:38827', 'moto_g32')
+    device = Device('192.168.155.2:39835', 'moto_g32')
     device.connect()
-    device.take_picture()
     sleep(1)
-    device.save_photo()
-    device.clear_gallery()
-    device.return_home()
-    device.disconnect()
+    print(device.lock_or_unlock_screen())
 """
