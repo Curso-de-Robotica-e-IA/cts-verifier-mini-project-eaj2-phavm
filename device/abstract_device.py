@@ -4,16 +4,6 @@ import subprocess
 
 class AbstractDevice(ABC):
 
-    @staticmethod
-    def __start_adb() -> None:
-        """
-        Start the ADB server.
-        """
-        subprocess.run('adb start-server')
-
-    @abstractmethod
-    def __is_model_camera_button_pos_mapped(self) -> bool:
-        ...
 
     @abstractmethod
     def connect(self) -> None:
@@ -24,15 +14,7 @@ class AbstractDevice(ABC):
         ...
 
     @abstractmethod
-    def __open_camera(self) -> None:
-        ...
-
-    @abstractmethod
     def take_picture(self) -> None:
-        ...
-
-    @abstractmethod
-    def __get_last_image(self) -> str:
         ...
 
     @abstractmethod

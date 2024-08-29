@@ -1,7 +1,7 @@
 import subprocess
 import os
 from time import sleep
-from device.abstract_device import AbstractDevice
+from abstract_device import AbstractDevice
 
 # Dict with coordinates of camera button to take picture
 models_specification = {'samsung_a34': {'x': 365, 'y': 1358, 'width': 78.1},
@@ -17,6 +17,13 @@ class Device(AbstractDevice):
         self.__camera__pos_dict = models_specification[self.model] if self.__is_model_camera_button_pos_mapped() else {}
         self.__connected = False
         self.width = models_specification[self.model]['width'] if self.__is_model_camera_button_pos_mapped() else 0
+
+    @staticmethod
+    def __start_adb() -> None:
+        """
+        Start the ADB server.
+        """
+        subprocess.run('adb start-server')
 
     def __is_model_camera_button_pos_mapped(self) -> bool:
         """
@@ -98,12 +105,9 @@ class Device(AbstractDevice):
         subprocess.run(f'adb -s {self.__ip_port} shell rm /sdcard/DCIM/Camera/*')
 
 
+
 if __name__ == '__main__':
-    device = Device('192.168.158.230:38827', 'moto_g32')
+    device = Device('192.168.155.2:39835', 'moto_g32')
     device.connect()
-    device.take_picture()
-    sleep(1)
-    device.save_photo()
-    device.clear_gallery()
-    device.return_home()
+    sleep(2)
     device.disconnect()
