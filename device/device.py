@@ -26,6 +26,13 @@ class Device(AbstractDevice):
         """
         subprocess.run('adb start-server')
 
+    @staticmethod
+    def __start_adb() -> None:
+        """
+        Start the ADB server.
+        """
+        subprocess.run('adb start-server')
+
     def __is_model_camera_button_pos_mapped(self) -> bool:
         """
         Check if the device's button camera is in the 'camera_button_dict'.
@@ -109,8 +116,9 @@ class Device(AbstractDevice):
         """
         Check whether the screen is locked or unlocked
         """
-        screen_status = subprocess.run(f'adb -s {self.__ip_port} shell "dumpsys power | grep \'mWakefulness=\'"',
-                                       capture_output=True, text=True)
+
+        screen_status = subprocess.run(f'adb -s {self.__ip_port} shell "dumpsys power | grep \'mWakefulness=\'"', capture_output=True, text=True)
+
         result = screen_status.stdout.split('=')[-1].strip()
         return result
 
@@ -136,8 +144,9 @@ class Device(AbstractDevice):
         """
         Open CTS Verifier app.
         """
-        subprocess.run(f'adb -s {self.__ip_port} shell am start -n com.android.cts.verifier/com.android.cts.verifier.'
-                       f'camera.orientation.CameraOrientationActivity')
+
+        subprocess.run(f'adb -s {self.__ip_port} shell am start -n com.android.cts.verifier/com.android.cts.verifier.camera.orientation.CameraOrientationActivity')
+
 
     def print_screen(self) -> None:
         """
@@ -164,3 +173,4 @@ if __name__ == '__main__':
     device.connect()
     sleep(1)
     print(device.lock_or_unlock_screen())
+
