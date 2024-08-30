@@ -16,7 +16,8 @@ class TestDevice(AbstractDevice):
         print('ADB iniciado')
         self.__is_adb_on = True
 
-    def __is_model_camera_button_pos_mapped(self) -> bool:
+    @staticmethod
+    def __is_model_camera_button_pos_mapped() -> bool:
         return True
 
     def disconnect(self) -> None:

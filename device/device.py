@@ -4,7 +4,7 @@ from time import sleep
 from abstract_device import AbstractDevice
 
 # Dict with coordinates of camera button to take picture
-models_specification = {'samsung_a34': {'x': 365, 'y': 1358, 'width': 78.1},
+MODELS_SPECIFICATION = {'samsung_a34': {'x': 365, 'y': 1358, 'width': 78.1},
                         'samsung_a04e': {'x': 365, 'y': 1358, 'width': 75.9},
                         'moto_g32': {'x': 540, 'y': 2090, 'width': 73.84},
                         'virutal_device': {'x': 365, 'y': 1358, 'width': 78.1}}
@@ -14,9 +14,10 @@ class Device(AbstractDevice):
     def __init__(self, ip_port: str, model) -> None:
         self.__ip_port = ip_port
         self.model = model
-        self.__camera__pos_dict = models_specification[self.model] if self.__is_model_camera_button_pos_mapped() else {}
+        self.__camera__pos_dict = MODELS_SPECIFICATION[self.model] if self.__is_model_camera_button_pos_mapped() else {}
         self.__connected = False
-        self.width = models_specification[self.model]['width'] if self.__is_model_camera_button_pos_mapped() else 0
+        self.width = MODELS_SPECIFICATION[self.model]['width'] if self.__is_model_camera_button_pos_mapped() else 0
+        self.CTS_ORIENTATION_POS_BUTTONS = {'ok': (463, 1027), 'not_ok': (1919, 1024), 'take_photo': (2000, 920)}
 
     @staticmethod
     def __start_adb() -> None:
@@ -30,7 +31,7 @@ class Device(AbstractDevice):
         Check if the device's button camera is in the 'camera_button_dict'.
         :return: bool
         """
-        return True if self.model in models_specification else False
+        return True if self.model in MODELS_SPECIFICATION else False
 
     def connect(self) -> None:
         """
@@ -104,10 +105,62 @@ class Device(AbstractDevice):
         """
         subprocess.run(f'adb -s {self.__ip_port} shell rm /sdcard/DCIM/Camera/*')
 
+    def __verify_screen_status(self) -> str:
+        """
+        Check whether the screen is locked or unlocked
+        """
+        screen_status = subprocess.run(f'adb -s {self.__ip_port} shell "dumpsys power | grep \'mWakefulness=\'"',
+                                       capture_output=True, text=True)
+        result = screen_status.stdout.split('=')[-1].strip()
+        return result
+
+    def lock_or_unlock_screen(self) -> bool:
+        """
+        Lock or unlock the screen.
+        """
+        status = self.__verify_screen_status()
+        if status == 'Dozing':
+            subprocess.run(f'adb -s {self.__ip_port} shell "input keyevent 26"')
+            sleep(1)
+            self.__swipe_upwards()
+            return True
+        return False
+    
+    def __swipe_upwards(self) -> None:
+        """
+        Swipe upwards on the screen (unlock screen if locked).
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell "input touchscreen swipe 930 880 930 380"')
+
+    def open_cts(self) -> None:
+        """
+        Open CTS Verifier app.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell am start -n com.android.cts.verifier/com.android.cts.verifier.'
+                       f'camera.orientation.CameraOrientationActivity')
+
+    def print_screen(self) -> None:
+        """
+        Take a picture of the current screen.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell screencap -p /sdcard/cameraorientationscreen.png')
+    
+    def save_print(self) -> None:
+        """
+        Get printscreen from device and save it in the computer.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} pull /sdcard/cameraorientationscreen.png')
+
+    def tap_by_coord(self, x, y) -> None:
+        """
+        Tap the screen in the coordinates 'x' and 'y'
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell input tap {x} {y}')
 
 
+# Tests
 if __name__ == '__main__':
     device = Device('192.168.155.2:39835', 'moto_g32')
     device.connect()
-    sleep(2)
-    device.disconnect()
+    sleep(1)
+    print(device.lock_or_unlock_screen())

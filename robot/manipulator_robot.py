@@ -1,6 +1,9 @@
+import os
+os.environ["USING_ROBOT_TEST"] = "True"
 from rria_api_denso import GripperResponses
 from robot.robot_api.denso_robot import DensoControl
 from robot.robot_api.denso_test import DensoTest
+
 
 # Device manipulator robot class
 class ManipulatorRobot:

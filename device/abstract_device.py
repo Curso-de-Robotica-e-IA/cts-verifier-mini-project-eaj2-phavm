@@ -1,30 +1,27 @@
 from abc import ABC, abstractmethod
-import subprocess
 
 
 class AbstractDevice(ABC):
-
-
     @abstractmethod
-    def connect(self) -> None:
+    def connect(self):
         ...
 
     @abstractmethod
-    def disconnect(self) -> None:
+    def disconnect(self):
         ...
 
     @abstractmethod
-    def take_picture(self) -> None:
+    def take_picture(self):
         ...
 
     @abstractmethod
-    def save_photo(self) -> None:
+    def save_photo(self):
         ...
 
     @abstractmethod
-    def return_home(self) -> None:
+    def return_home(self):
         ...
 
     @abstractmethod
-    def clear_gallery(self) -> None:
+    def clear_gallery(self):
         ...
