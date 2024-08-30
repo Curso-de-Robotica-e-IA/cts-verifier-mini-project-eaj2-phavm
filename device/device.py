@@ -147,18 +147,22 @@ class Device(AbstractDevice):
 
         subprocess.run(f'adb -s {self.__ip_port} shell am start -n com.android.cts.verifier/com.android.cts.verifier.camera.orientation.CameraOrientationActivity')
 
-
     def print_screen(self) -> None:
         """
         Take a picture of the current screen.
         """
         subprocess.run(f'adb -s {self.__ip_port} shell screencap -p /sdcard/cameraorientationscreen.png')
     
-    def save_print(self) -> None:
+    def save_print(self) -> str:
         """
         Get printscreen from device and save it in the computer.
         """
-        subprocess.run(f'adb -s {self.__ip_port} pull /sdcard/cameraorientationscreen.png')
+        current_directory = os.getcwd()
+        image_local_path = os.path.join(current_directory, r'printscreens')
+        if not os.path.exists(image_local_path):
+            os.mkdir(image_local_path)
+        subprocess.run(f'adb -s {self.__ip_port} pull /sdcard/cameraorientationscreen.png {image_local_path}')
+        return f'{image_local_path}/cameraorientationscreen.png'
 
     def tap_by_coord(self, x, y) -> None:
         """

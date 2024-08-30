@@ -3,8 +3,6 @@ import numpy as np
 
 
 ORIENTATION_DICT = {'bottom_right': 0, 'bottom_left': 90, 'top_left': 180, 'top_right': 270}
-CAMERA_PREVIEW_CORDS = (240, 852, 102, 919)
-ORIENTED_PHOTOS_CORDS = (240, 853, 920, 1735)
 
 
 class Picture:
