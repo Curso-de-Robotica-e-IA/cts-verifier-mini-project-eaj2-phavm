@@ -108,7 +108,7 @@ class DensoTest(AbstractDenso):
         if self.__connected and self.__motor_enabled:
             _, msg = get_pose(pose, 0)
             sleep(1)
-            print('\n' + msg + 'by joints move')
+            print('\n' + msg + ' by joints move')
             return True
         elif not self.motor_enabled():
             print('\nRobot motor is off')
@@ -122,7 +122,7 @@ class DensoTest(AbstractDenso):
         if self.__connected and self.__motor_enabled:
             _, msg = get_pose(pose, 1)
             sleep(1)
-            print('\n' + msg + 'by cartesian move')
+            print('\n' + msg + ' by cartesian move')
         elif not self.motor_enabled():
             print('\nRobot motor is off')
             return False

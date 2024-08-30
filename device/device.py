@@ -1,7 +1,7 @@
 import subprocess
 import os
 from time import sleep
-from abstract_device import AbstractDevice
+from device.abstract_device import AbstractDevice
 
 # Dict with coordinates of camera button to take picture
 MODELS_SPECIFICATION = {'samsung_a34': {'x': 365, 'y': 1358, 'width': 78.1},
@@ -122,7 +122,7 @@ class Device(AbstractDevice):
         result = screen_status.stdout.split('=')[-1].strip()
         return result
 
-    def lock_or_unlock_screen(self) -> bool:
+    def unlock_screen(self) -> bool:
         """
         Lock or unlock the screen.
         """
@@ -176,5 +176,5 @@ if __name__ == '__main__':
     device = Device('192.168.155.2:39835', 'moto_g32')
     device.connect()
     sleep(1)
-    print(device.lock_or_unlock_screen())
+    print(device.unlock_screen())
 

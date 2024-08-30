@@ -13,7 +13,7 @@ class ManipulatorRobot:
             self.__api = DensoControl(f"celular_{tag}", f"robot_{tag}", "Server=192.168.160.226")
         else:
             # Test robot
-            self.__api = DensoTest(f"celular_{tag}", f"robot_{tag}", "Server=192.168.160.226")
+            self.__api = DensoTest()
 
         self.__speed = 20
         self.__acc = 20

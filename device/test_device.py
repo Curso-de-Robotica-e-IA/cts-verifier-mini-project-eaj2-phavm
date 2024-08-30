@@ -12,6 +12,7 @@ class TestDevice(AbstractDevice):
         self.width = 0
         self.__is_adb_on = False
         self.__device_connected = False
+        self.CTS_ORIENTATION_POS_BUTTONS = {'ok': (463, 1027), 'not_ok': (1919, 1024), 'take_photo': (2000, 920)}
 
     def __start_adb(self) -> None:
         print('ADB iniciado')
@@ -49,7 +50,7 @@ class TestDevice(AbstractDevice):
     def __verify_screen_status(self) -> str:
         return random.choice(['Awake', 'Dozing'])
     
-    def lock_or_unlock_screen(self) -> bool:
+    def unlock_screen(self) -> bool:
         status = self.__verify_screen_status()
         if status == 'Dozing':
             sleep(1)
@@ -66,8 +67,9 @@ class TestDevice(AbstractDevice):
     def print_screen(self) -> None:
         print('\nPrinting the screen')
 
-    def save_print(self) -> None:
+    def save_print(self) -> str:
         print('\nSaving printscreen')
+        return 'aruco_detector/cameraorientationscreen.png'
 
     def tap_by_coord(self, x, y) -> None:
         print(f'\nTapping {x} {y} coordinates')
