@@ -110,7 +110,6 @@ class Device(AbstractDevice):
         """
         screen_status = subprocess.run(f'adb -s {self.__ip_port} shell "dumpsys power | grep \'mWakefulness=\'"', capture_output=True, text=True)
         result = screen_status.stdout.split('=')[-1].strip()
-        #result = result.[-1]
         return result
 
     def lock_or_unlock_screen(self) -> bool:
@@ -148,6 +147,12 @@ class Device(AbstractDevice):
         Get printscreen from device and save it in the computer.
         """
         subprocess.run(f'adb -s {self.__ip_port} pull /sdcard/cameraorientationscreen.png')
+
+    def tap_by_coord(self, x, y) -> None:
+        """
+        Tap the screen in the coordinates 'x' and 'y'
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell input tap {x} {y}')
 
 """
 # Tests
