@@ -67,6 +67,7 @@ class TestDevice(AbstractDevice):
 
     def save_print(self) -> None:
         print('\nSaving printscreen')
+        return 'image_local_path/cameraorientationscreen.png'
 
     def tap_by_coord(self, x, y) -> None:
         print(f'\nTapping {x} {y} coordinates')

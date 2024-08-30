@@ -23,6 +23,5 @@ if __name__ == '__main__':
 
     device.lock_or_unlock_screen() # Unlock screen if it's unlocked
     device.open_cts() # Open CTS Verifier
+    device.tap_by_coord() # Take picture
     device.print_screen() # Print the screen
-
-    
