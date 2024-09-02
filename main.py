@@ -13,8 +13,8 @@ def main():
     count_test = 0
     test_ok = True
 
-    robot = ManipulatorRobot(tag, 2)
-    device = Device('192.168.155.2:42451', 'moto_g32')
+    robot = ManipulatorRobot(tag, 1)
+    device = Device('192.168.155.2:38417', 'moto_g32')
     orientation_detector = OrientationDetector()
     device.connect()
 
@@ -28,6 +28,7 @@ def main():
     robot.cartesian_move('pre_grasp')  # Retreat above device holder
     robot.joint_move('detect_aruco') # Get ready to test the device
     robot.rotate_gripper_to_zero()
+    robot.rotate_gripper('clockwise')
 
     device.unlock_screen()  # Unlock screen if it's unlocked
     device.open_cts()  # Open CTS Verifier
