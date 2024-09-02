@@ -14,7 +14,7 @@ def main():
     test_ok = True
 
     robot = ManipulatorRobot(tag, 2)
-    device = TestDevice('192.168.155.2:40605', 'moto_g32')
+    device = Device('192.168.155.2:42451', 'moto_g32')
     orientation_detector = OrientationDetector()
     device.connect()
 
@@ -33,9 +33,13 @@ def main():
     device.open_cts()  # Open CTS Verifier
 
     while count_test < 4 and test_ok:
+        sleep(5)
         device.tap_by_coord(*device.CTS_ORIENTATION_POS_BUTTONS['take_photo'])  # take photo
+        sleep(3)
         device.print_screen()  # Print the screen
+        sleep(1)
         printscreen = Picture(device.save_print())  # Save print
+        sleep(1)
         camera_preview_picture = orientation_detector.crop_image(printscreen, *CAMERA_PREVIEW_COORDS)
         oriented_photo_picture = orientation_detector.crop_image(printscreen, *ORIENTED_PHOTOS_COORDS)
         if (orientation_detector.detect_orientation_with_aruco(camera_preview_picture) ==
@@ -48,7 +52,7 @@ def main():
             device.tap_by_coord(*device.CTS_ORIENTATION_POS_BUTTONS['not_ok'])
             print('Camera orientation test failed')
             test_ok = False
-    for _ in range(3):
+    for _ in range(count_test):
         robot.rotate_gripper('clockwise')
 
     robot.joint_move('pre_grasp')  # Get ready to lay down the device
@@ -57,6 +61,7 @@ def main():
     robot.cartesian_move('pre_grasp')  # Retreat above device holder
     robot.joint_move('home')  # Retreat to initial position
     robot.give_control()  # Task finished
+    device.close_cts_verifier()
     device.disconnect()
 
 

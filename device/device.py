@@ -170,6 +170,11 @@ class Device(AbstractDevice):
         """
         subprocess.run(f'adb -s {self.__ip_port} shell input tap {x} {y}')
 
+    def close_cts_verifier(self) -> None:
+        """
+        Close the CTS-Verifier app.
+        """
+        subprocess.run(f'adb -s {self.__ip_port} shell am force-stop com.android.cts.verifier')
 
 # Tests
 if __name__ == '__main__':

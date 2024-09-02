@@ -85,10 +85,10 @@ class ManipulatorRobot:
     # Rotate the gripper by 90° or -90°
     def rotate_gripper(self, direction : str):
         cur_position = self.__api.get_joints_pose()
-        if cur_position < 270 and direction == 'clockwise':
+        if cur_position.joint_6 < 270 and direction == 'clockwise':
             cur_position.joint_6 = cur_position.joint_6 + self.__angular_step
             self.__api.move_joints(cur_position)
-        elif cur_position > -270 and direction == 'counterclockwise':
+        elif cur_position.joint_6 > -270 and direction == 'counterclockwise':
             cur_position.joint_6 = cur_position.joint_6 - self.__angular_step
             self.__api.move_joints(cur_position)
         else:
